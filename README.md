@@ -1,6 +1,8 @@
 Steps for Code Implementation:
+
 Step 1: Install Dependencies
 pip install torch torchvision torchaudio transformers matplotlib numpy scikit-learn
+
 Step 2: Import Libraries
 import torch
 import torch.nn as nn
@@ -10,6 +12,7 @@ from torch.utils.data import DataLoader, Dataset
 from transformers import SwinTransformer
 import matplotlib.pyplot as plt
 import numpy as np
+
 Step 3: Data Preprocessing
 Step 3.1: Load MRI Data
 class BrainTumorDataset(Dataset):
@@ -36,6 +39,8 @@ transform = transforms.Compose([
     mask_paths='path_to_masks', transform=transform)
 
 train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+
+
 Step 4: Define U-Net Architecture
 class UNet(nn.Module):
     def __init__(self, in_channels=1, out_channels=2):
@@ -75,6 +80,8 @@ class UNet(nn.Module):
         dec3 = self.dec3(dec2 + enc2)
         dec4 = self.dec4(dec3 + enc1)
         return dec4
+
+
 Step: 5 Define Class Conditional GAN (cGAN)
 Step 5.1: Generator (U-Net)
 class Generator(nn.Module):
@@ -97,6 +104,8 @@ class Discriminator(nn.Module):
         x = torch.relu(self.conv3(x))
         x = x.view(x.size(0), -1)  # Flatten the output for the fully connected layer
         return torch.sigmoid(self.fc(x))
+
+
 Step: 6 Integrating Swin Transformer
 class SwinTransformerExtractor(nn.Module):
     def __init__(self):
@@ -105,6 +114,8 @@ class SwinTransformerExtractor(nn.Module):
         window7-224')
     def forward (self, x):
         return self.swin_transformer(x)
+
+
 Step: 7Training the Model
 def train(generator, discriminator, dataloader, num_epochs=50):
     criterion_gan = nn.BCELoss()  # Binary Cross Entropy Loss for GAN
@@ -145,6 +156,8 @@ def train(generator, discriminator, dataloader, num_epochs=50):
             optimizer_g.step()
         print(f"Epoch [{epoch+1}/{num_epochs}], D Loss: {d_loss.item()}, G Loss:  
          {g_loss.item()}")
+
+
 Step: 8 Model Evaluation
 def evaluate(generator, dataloader):
     generator.eval()
@@ -154,6 +167,8 @@ def evaluate(generator, dataloader):
             # Calculate Dice Similarity Coefficient, Accuracy, etc.
             dice_score = calculate_dice(output, masks)
             print(f"Dice Score: {dice_score}")
+
+
 Step: 9 Visualization
 def visualize_output(generator, dataloader):
     generator.eval()
